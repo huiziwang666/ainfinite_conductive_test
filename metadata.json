@@ -1,0 +1,7 @@
+{
+  "name": "Professor Sparky's Science Lab",
+  "description": "A fun conductivity tester for kids using Makey Makey, featuring Professor Sparky the AI Robot.",
+  "requestFramePermissions": [
+    "microphone"
+  ]
+}
