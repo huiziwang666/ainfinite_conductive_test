@@ -9,6 +9,7 @@ export const ChatBot: React.FC = () => {
   ]);
   const [isLoading, setIsLoading] = useState(false);
   const [isListening, setIsListening] = useState(false);
+  const [speakingIndex, setSpeakingIndex] = useState<number | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
@@ -18,6 +19,13 @@ export const ChatBot: React.FC = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  useEffect(() => {
+    // Load voices on component mount
+    if (window.speechSynthesis) {
+      window.speechSynthesis.getVoices();
+    }
+  }, []);
 
   const handleSend = async () => {
     if (!input.trim()) return;
@@ -72,6 +80,51 @@ export const ChatBot: React.FC = () => {
     recognition.start();
   };
 
+  const speakText = (text: string, messageIndex: number) => {
+    // Stop any ongoing speech
+    window.speechSynthesis.cancel();
+
+    // If already speaking this message, stop
+    if (speakingIndex === messageIndex) {
+      setSpeakingIndex(null);
+      return;
+    }
+
+    // Remove emojis from the text
+    const cleanText = text.replace(/[\u{1F300}-\u{1F9FF}]|[\u{2600}-\u{26FF}]|[\u{2700}-\u{27BF}]|[\u{1F900}-\u{1F9FF}]|[\u{1FA70}-\u{1FAFF}]|[\u{1F600}-\u{1F64F}]|[\u{1F680}-\u{1F6FF}]|[\u{1F1E0}-\u{1F1FF}]/gu, '');
+
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    
+    // Get available voices and prefer a male English voice
+    const voices = window.speechSynthesis.getVoices();
+    const professorVoice = voices.find(voice => 
+      voice.lang.startsWith('en') && 
+      (voice.name.includes('Male') || voice.name.includes('Daniel') || voice.name.includes('Fred'))
+    ) || voices.find(voice => voice.lang.startsWith('en'));
+    
+    if (professorVoice) {
+      utterance.voice = professorVoice;
+    }
+    
+    utterance.rate = 0.95; // Slightly slower, more professorial
+    utterance.pitch = 0.8; // Lower pitch for a deeper, more authoritative voice
+    utterance.volume = 1;
+
+    utterance.onstart = () => {
+      setSpeakingIndex(messageIndex);
+    };
+
+    utterance.onend = () => {
+      setSpeakingIndex(null);
+    };
+
+    utterance.onerror = () => {
+      setSpeakingIndex(null);
+    };
+
+    window.speechSynthesis.speak(utterance);
+  };
+
   return (
     <div className="bg-fun-purple p-2 rounded-[3rem] shadow-2xl border-b-8 border-fun-dark-purple max-w-md mx-auto sm:max-w-full transform hover:scale-[1.01] transition-transform duration-300">
       
@@ -105,14 +158,29 @@ export const ChatBot: React.FC = () => {
               key={idx}
               className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'} relative z-10`}
             >
-              <div
-                className={`max-w-[85%] p-3 sm:p-4 text-sm sm:text-base font-bold shadow-[2px_2px_0px_rgba(0,0,0,0.1)] ${
-                  msg.role === 'user'
-                    ? 'bg-fun-yellow text-slate-800 rounded-2xl rounded-tr-none border-2 border-yellow-400'
-                    : 'bg-fun-bg text-slate-700 rounded-2xl rounded-tl-none border-2 border-blue-200'
-                }`}
-              >
-                {msg.text}
+              <div className={`flex items-start gap-2 ${msg.role === 'user' ? 'flex-row-reverse' : 'flex-row'}`}>
+                <div
+                  className={`max-w-[85%] p-3 sm:p-4 text-sm sm:text-base font-bold shadow-[2px_2px_0px_rgba(0,0,0,0.1)] ${
+                    msg.role === 'user'
+                      ? 'bg-fun-yellow text-slate-800 rounded-2xl rounded-tr-none border-2 border-yellow-400'
+                      : 'bg-fun-bg text-slate-700 rounded-2xl rounded-tl-none border-2 border-blue-200'
+                  }`}
+                >
+                  {msg.text}
+                </div>
+                {msg.role === 'model' && (
+                  <button
+                    onClick={() => speakText(msg.text, idx)}
+                    className={`flex-shrink-0 w-8 h-8 rounded-full flex items-center justify-center text-lg transition-all border-2 shadow-sm hover:scale-110 active:scale-95 ${
+                      speakingIndex === idx
+                        ? 'bg-fun-green text-white border-green-600 animate-pulse'
+                        : 'bg-white text-fun-blue border-blue-300 hover:bg-fun-blue hover:text-white'
+                    }`}
+                    title="Speak out loud"
+                  >
+                    {speakingIndex === idx ? '🔊' : '🔈'}
+                  </button>
+                )}
               </div>
             </div>
           ))}
