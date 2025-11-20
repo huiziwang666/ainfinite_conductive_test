@@ -12,7 +12,6 @@ export const KnowledgeBase: React.FC = () => {
     { name: 'Coins', icon: '🪙', desc: 'Money is metal!', stars: 3 },
     { name: 'Play-Doh', icon: '🐌', desc: 'Salty clay', stars: 2 },
     { name: 'Paper Clip', icon: '📎', desc: 'Bendable metal', stars: 3 },
-    { name: 'Soda Can', icon: '🥫', desc: 'Aluminum', stars: 3 },
   ];
 
   const insulatorItems = [
@@ -24,6 +23,7 @@ export const KnowledgeBase: React.FC = () => {
     { name: 'Cotton', icon: '👕', desc: 'T-Shirts & Fabric' },
     { name: 'Balloon', icon: '🎈', desc: 'Stretchy rubber' },
     { name: 'Eraser', icon: '🧼', desc: 'Rubbery stuff' },
+    { name: 'Ceramic', icon: '☕', desc: 'Cups & Plates' },
   ];
 
   return (
