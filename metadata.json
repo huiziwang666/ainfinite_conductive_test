@@ -1,6 +1,6 @@
 {
-  "name": "Professor Sparky's Science Lab",
-  "description": "A fun conductivity tester for kids using Makey Makey, featuring Professor Sparky the AI Robot.",
+  "name": "AInfinite's Lab",
+  "description": "A fun conductivity tester for kids using Makey Makey, featuring Professor Sparky the AI Robot. Powered by AInfinite.",
   "requestFramePermissions": [
     "microphone"
   ]

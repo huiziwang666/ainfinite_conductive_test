@@ -13,16 +13,16 @@ export const NavBar: React.FC<NavBarProps> = ({ currentView, setView }) => {
         
         {/* Logo Area */}
         <div className="flex items-center gap-4 group cursor-default">
-          <div className="bg-fun-yellow p-3 rounded-2xl border-b-8 border-fun-dark-yellow active:border-b-0 active:translate-y-2 transition-all transform hover:rotate-6">
-            <span className="text-4xl filter drop-shadow-sm">🤖</span>
+          <div className="bg-white p-2 rounded-2xl border-4 border-slate-200 active:border-b-0 active:translate-y-2 transition-all transform hover:scale-105 shadow-md">
+            <img src="/new-logo.png" alt="AInfinite Logo" className="w-12 h-12 object-contain" />
           </div>
           <div className="flex flex-col">
              <h1 className="text-3xl font-black text-fun-blue tracking-tight leading-none" style={{ textShadow: '2px 2px 0px #00000010' }}>
-              Professor Sparky
+              AInfinite's Lab
             </h1>
             <div className="flex gap-2 mt-1">
               <span className="text-[10px] font-black text-white uppercase bg-fun-red px-2 py-1 rounded-lg transform -rotate-2 shadow-sm">
-                Super Lab
+                Science Fun
               </span>
               <span className="text-[10px] font-black text-white uppercase bg-fun-green px-2 py-1 rounded-lg transform rotate-2 shadow-sm">
                 v3.0
